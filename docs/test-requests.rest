@@ -1,0 +1,19 @@
+# -*- restclient -*-
+
+GET http://localhost:5000/words/
+#
+PUT http://localhost:5000/word/
+{
+    "name": "Piticlin",
+    "definitions": [
+        {
+            "content": "Persona excesivamente pusilánime o metrosexual.",
+            "examples": [
+                {
+                    "content": "Justin Beiber es un pitíclin"
+                }
+            ]
+        }
+    ]
+}
+#
