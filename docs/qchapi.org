@@ -1,0 +1,82 @@
+* Model
+** Word
+|----+----------|
+| pk | name     |
+|----+----------|
+|  1 | Perú     |
+|  2 | Desayuno |
+|----+----------|
+
+#+begin_src json
+{
+    "id": 1,
+    "name": "Perú",
+    "definitions": [
+        {
+            "id": 1,
+            "content": "Laprimeracomidadeldía",
+            "examples": [
+                {
+                    "id": 1,
+                    "content": "PaísdeSudamerica"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "content": "TierradelZamboCavero",
+            "examples": []
+        }
+    ]
+}
+#+end_src
+
+** Definition
+|----+-------------------------+------------|
+| pk | content                 | keyword_id |
+|----+-------------------------+------------|
+|  1 | País de Sudamerica      |          1 |
+|  2 | Tierra del Zambo Cavero |          1 |
+|  3 | Primera comida del día  |          2 |
+|----+-------------------------+------------|
+
+#+begin_src json
+{
+   "id": 3,
+   "parent_url": "/keyword/1/"
+   "content": "La primera comida del día",
+   "examples":
+ [
+   {
+     "id": 2,
+     "content": "Desayune panqueques",
+     "definition_id": 2
+   },
+   {
+     "id": 3,
+     "content": "No debi desayunar jugo de naranja sobre leche",
+     "definition_id": 2
+   }
+]}
+#+end_src
+
+** Examples
+|----+-----------------------------------------------+---------------|
+| pk | content                                       | definition_id |
+|----+-----------------------------------------------+---------------|
+|  1 | Perú es lo máximo                             |             1 |
+|  2 | Desayune panqueues                            |             2 |
+|  3 | No debi desayunar jugo de naranja sobre leche |             2 |
+|----+-----------------------------------------------+---------------|
+
+#+begin_src json
+{
+  "id": 3,
+  "content": "No debi desayunar jugo de naranja sobre leche",
+  "definition_id": 2
+}
+#+end_src
+* Endpoints
+  URL: "/words/"
+  List All words/10 words?
+  URL: "PUT /word/"
