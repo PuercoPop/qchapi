@@ -57,7 +57,7 @@ And now we are all set, to define one function to create all the tables in one g
 #+end_src
 
 *** Droping all the tables in database
-    First we need a list of all the database tabes. To do so there is the list-tables command. 
+    First we need a list of all the database tabes. To do so there is the list-tables command.
 
 #+begin_src lisp
 (defun drop-tables ()
@@ -116,17 +116,27 @@ And now to the examples:
   (pomo:select-dao 'definition (:= :word "bobo")))
 
 ;; To narrow the selection to those words that include the word "enamorada"
-(with-connection *db*  
-  (pomo:select-dao 
-   'definition 
+(with-connection *db*
+  (pomo:select-dao
+   'definition
    (:and  (:like :content "%enamorada%")
           (:= :word "bobo"))))
 #+end_src
 
 *** Deleting Data
 
-    For delete we have a similar procedure:
+    For delete we have a similar procedure, but we have to pass an dao instance. We can use get-dao, select-dao or even make-instance. However using make-instance, everyslot muy be bound, including the primary key so it is not of much use:
 #+begin_src lisp
+;; Delete the first definition of the word "bobo"
+(with-connection *db*
+  (pomo:delete-dao (first (pomo:select-dao 'definition (:= :word "bobo")))))
+
+;; Delete all the defintions of the word "bobo"
+(with-connection *db*
+  (dolist (row (pomo:select-dao 'definition (:= :word "bobo")))
+    (pomo:delete-dao row)))
+
+;; Just for completion
 (with-connection *db*
   (pomo:delete-dao (make-instance 'word :name "bobo")))
 #+end_src
@@ -144,4 +154,3 @@ Query: DROP TABLE word
    [Condition of type DATABASE-ERROR]
 
 [fn:2] Direct Access Objects
-
