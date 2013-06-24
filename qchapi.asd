@@ -14,7 +14,6 @@
 
   :pathname "src/"
   :components ((:file "packages")
-               (:file "qchapi")
                (:module "models"
                 :serial t
                 :components
@@ -27,4 +26,5 @@
                 :serial t
                 :components
                 ((:file "endpoints")
-                 (:file "routes")))))
+                 (:file "routes")))
+               (:file "qchapi")))

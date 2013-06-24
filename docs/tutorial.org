@@ -3,6 +3,58 @@
 ** Structure
 * Postmodern
 ** Creating & Deleting the tables
+
+To specify a table postmodern uses DAO[fn:2] classes:
+#+begin_src lisp
+(defclass word ()
+  ((name :col-type string :initarg :name :accessor word-name))
+  (:keys name)
+  (:metaclass dao-class))
+#+end_src
+
+The function dao-table-definition returns the SQL string to create the table, so one can create tables from a dao class with the the following statement:
+#+begin_src lisp
+(pomo:execute (pomo:dao-table-definition 'word))
+#+end_src
+
+However as you, dao classes don't accomodate for inter-table relentionships such as foreign keys. To do so one must define a table. So for example for a definition that contains a foreign key the the word's name we would do the following:
+
+#+begin_src lisp
+(defclass definition ()
+  ((id :col-type serial :reader definition-id)
+   (content :col-type string :initarg :content :accessor definition-content)
+   (word :col-type string :initarg :word :accessor definition-word))
+  (:metaclass dao-class)
+  (:keys id))
+
+(deftable definition
+  (!dao-def)
+  (!foreign 'word 'word :primary-key))
+#+end_src
+
+And to create the table in the database from a table definition one has one can do:
+
+#+begin_src lisp
+(pomo:create-table 'definition)
+#+end_src
+
+However there is still one minor detail, if the table already exists attempting to create the table again would result in an error. We can use the function table-exists-p to check if it exists prior to attempting to create it, although I dislike the hassle of writing such boilerplate, hence we use the following macro
+
+#+begin_src lisp
+(defmacro ensure-table (table-name)
+  `(unless (pomo:table-exists-p ,table-name)
+     (pomo:create-table ',table-name)))
+#+end_src
+
+And now we are all set, to define one function to create all the tables in one go
+#+begin_src lisp
+(defun create-tables ()
+  (with-connection *db*
+    (ensure-table 'word)
+    (ensure-table 'definition)
+    (ensure-table 'example)))
+#+end_src
+
 *** Droping all the tables in database
     First we need a list of all the database tabes. To do so there is the list-tables command. 
 
@@ -14,15 +66,7 @@
         (query (:drop-table table))))))
 #+end_src
 
-But, at least when I tried it, I got an error[fn:1] due to foreign keys constraints, the solution was to reverse the list.
-
-#+begin_src lisp
-(defun drop-tables ()
-  (with-connection *db*
-    (let ((tables  (reverse (pomo:list-tables))))
-      (dolist (table tables)
-        (query (:drop-table table))))))
-#+end_src
+There is however a subtle error[fn:1] in this code. Due to foreign keys constraints, the tables must be dropped in an specific order.
 
 * Ningle
 
@@ -32,4 +76,6 @@ But, at least when I tried it, I got an error[fn:1] due to foreign keys constrai
 constraint definition_word_word_foreign on table definition depends on table word
 Query: DROP TABLE word
    [Condition of type DATABASE-ERROR]
+
+[fn:2] Direct Access Objects
 

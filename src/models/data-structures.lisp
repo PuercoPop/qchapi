@@ -2,8 +2,8 @@
 
 (defclass word ()
   ((name :col-type string :initarg :name :accessor word-name))
-     (:keys name)
-     (:metaclass dao-class))
+  (:keys name)
+  (:metaclass dao-class))
 
 (defclass definition ()
   ((id :col-type serial :reader definition-id)
@@ -19,3 +19,13 @@
                   :accessor example-definition))
   (:metaclass dao-class)
   (:keys id))
+
+(deftable word (!dao-def))
+
+(deftable definition
+  (!dao-def)
+  (!foreign 'word 'word :primary-key))
+
+(deftable example
+  (!dao-def)
+  (!foreign 'definition 'definition-id :primary-key))
