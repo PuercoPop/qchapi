@@ -1,6 +1,7 @@
 * Intro
 ** Goals
 ** Structure
+* App structure
 * Postmodern
 ** Creating & Deleting the tables
 
@@ -68,7 +69,72 @@ And now we are all set, to define one function to create all the tables in one g
 
 There is however a subtle error[fn:1] in this code. Due to foreign keys constraints, the tables must be dropped in an specific order.
 
+** Working with the models
+
+*** Inserting Data
+    One can insert rows of data using the insert-dao function, which takes an instance of a class with dao-class as a metaclass.
+#+begin_src lisp
+(with-connection *db*
+  (pomo:insert-dao (make-instance 'word :name "bobo")))
+#+end_src
+
+    However if one tries to insert a duplicate field it will raise an error. One can check if the object already exists with the function dao-exists-p. So we can write a macro ensure-word
+
+#+begin_src lisp
+(defmacro ensure-dao (dao-instance)
+  `(unless (pomo:dao-exists-p ,dao-instance)
+     (pomo:insert-dao ,dao-instance)))
+#+end_src
+
+And now we can don't have to worry about violation a non-duplicate constraint =D.
+
+*** Selecting Data
+    To retrieve data we have two functions, get-dao and select-dao. We use get-dao two retrieve daos by primary-keys; and select-dao to select a list of daos that match the test critería.
+
+#+begin_src lisp
+(with-connection *db*
+  (pomo:get-dao 'word "bobo"))
+#+end_src
+
+Before we show how select dao works lets insert some more data.
+#+begin_src lisp
+(with-connection *db*
+  (ensure-dao (make-instance 'definition
+                             :content "es un piticlin"
+                             :word "bobo")))
+
+(with-connection *db*
+  (ensure-dao (make-instance 'definition
+                             :content "Una persona enamorada"
+                             :word "bobo")))
+#+end_src
+
+And now to the examples:
+#+begin_src lisp
+;; To select all the definitions of the word "bobo"
+(with-connection *db*
+  (pomo:select-dao 'definition (:= :word "bobo")))
+
+;; To narrow the selection to those words that include the word "enamorada"
+(with-connection *db*  
+  (pomo:select-dao 
+   'definition 
+   (:and  (:like :content "%enamorada%")
+          (:= :word "bobo"))))
+#+end_src
+
+*** Deleting Data
+
+    For delete we have a similar procedure:
+#+begin_src lisp
+(with-connection *db*
+  (pomo:delete-dao (make-instance 'word :name "bobo")))
+#+end_src
+*** Updating Data
 * Ningle
+
+* References
+  - https://sites.google.com/site/sabraonthehill/postmodern-examples/
 
 * Footnotes
 

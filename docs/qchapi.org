@@ -1,5 +1,6 @@
 * TODO List
   - [ ] Generate the wiki/gh pages from org-mode
+  - [ ] Generate the ensure-(word/def/example) using mop
 * Model
 ** Word
 |----+----------|
