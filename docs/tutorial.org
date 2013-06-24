@@ -1,0 +1,35 @@
+* Intro
+** Goals
+** Structure
+* Postmodern
+** Creating & Deleting the tables
+*** Droping all the tables in database
+    First we need a list of all the database tabes. To do so there is the list-tables command. 
+
+#+begin_src lisp
+(defun drop-tables ()
+  (with-connection *db*
+    (let ((tables  (pomo:list-tables)))
+      (dolist (table tables)
+        (query (:drop-table table))))))
+#+end_src
+
+But, at least when I tried it, I got an error[fn:1] due to foreign keys constraints, the solution was to reverse the list.
+
+#+begin_src lisp
+(defun drop-tables ()
+  (with-connection *db*
+    (let ((tables  (reverse (pomo:list-tables))))
+      (dolist (table tables)
+        (query (:drop-table table))))))
+#+end_src
+
+* Ningle
+
+* Footnotes
+
+[fn:1] Database error 2BP01: cannot drop table word because other objects depend on it
+constraint definition_word_word_foreign on table definition depends on table word
+Query: DROP TABLE word
+   [Condition of type DATABASE-ERROR]
+

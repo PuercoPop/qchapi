@@ -15,7 +15,16 @@
   :pathname "src/"
   :components ((:file "packages")
                (:file "qchapi")
-               (:file "api")
-               (:file "models")
-               (:file "tables")
-))
+               (:module "models"
+                :serial t
+                :components
+                ((:file "conf")
+                 (:file "utils")
+                 (:file "data-structures")
+                 (:file "tables")
+                 (:file "queries")))
+               (:module "api"
+                :serial t
+                :components
+                ((:file "endpoints")
+                 (:file "routes")))))

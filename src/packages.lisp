@@ -1,25 +1,30 @@
-;;;; package.lisp
-(defpackage #:qchapi
-  (:use #:cl))
-
 (defpackage #:qchapi.models
-  (:use #:cl)
-  (:import-from :postmodern #:deftable
-                            #:!dao-def
-                            #:dao-class
-                            #:!foreign
-                            #:insert-dao
-                            #:get-dao)
-  (:export #:word
+  (:use #:cl #:pomo)
+  (:export #:*db*
+           #:word
            #:definition
            #:example))
 
-(defpackage #:qchapi.db
+(defpackage #:qchapi
   (:use #:cl)
-  (:import-from :qchapi.models #:word
+  (:import-from :ningle :*response*)
+  (:import-from :postmodern #:query)
+  (:import-from :qchapi.models #:*db*
+                               #:word
                                #:definition
-                               #:example)
+                               #:example))
 
-  (:import-from :postmodern #:deftable
-                            #:!dao-def
-                            #:!foreign))
+
+
+
+;; (:import-from :postmodern #:deftable
+;;                           #:!dao-def
+;;                           #:dao-class
+;;                           #:!foreign
+;;                           #:insert-dao
+;;                           #:get-dao
+;;                           #:deftable
+;;                           #:!dao-def
+;;                           #:!foreign
+;;                           #:table-exists-p
+;;                           #:dao-table-definition)
