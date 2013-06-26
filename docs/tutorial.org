@@ -1,6 +1,18 @@
+#+TITLE: Common Lisp Web Development: From n00b to Pro (Hopefully)
 * Intro
 ** Goals
 ** Structure
+* ASDF files and Dependencies
+** System definition
+** Dependencies: Quicklisp
+   To load the system we defined earlier and fetch whatever dependencies we wrote in the part before we load that system with quicklisp, provided that it is in the local projects directory. By default the local projects directory is "~/quicklisp/local-projects".
+
+#+begin_src lisp
+(ql:quickload :qchapi)
+;; We can also do
+(ql:quickload "qchapi")
+#+end_src
+** Namespaces (packages)
 * App structure
 * Postmodern
 ** Creating & Deleting the tables
