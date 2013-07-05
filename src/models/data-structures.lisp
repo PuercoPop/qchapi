@@ -29,3 +29,18 @@
 (deftable example
   (!dao-def)
   (!foreign 'definition 'definition-id :primary-key))
+
+(defmethod print-object ((obj word) stream)
+  "In order to help checking the results"
+  (print-unreadable-object (obj stream :type t :identity t)
+    (format stream "name: ~A" (word-name obj))))
+
+(defmethod print-object ((obj definition) stream)
+  "In order to help checking the results"
+  (print-unreadable-object (obj stream :type t :identity t)
+    (format stream "of the word: ~A. Content: ~A" (definition-word obj) (definition-content obj))))
+
+(defmethod print-object ((obj example) stream)
+  "In order to help checking the results"
+  (print-unreadable-object (obj stream :type t :identity t)
+    (format stream "content: ~A" (example-content obj))))

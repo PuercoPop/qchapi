@@ -83,6 +83,32 @@ There is however a subtle error[fn:1] in this code. Due to foreign keys constrai
 
 ** Working with the models
 
+*** Pretty Printing DAO
+    Because represinting dao objects with stringssuch as #<WORD {1009556933}> doesn't tell us much about the data inside the model before we continue we are going to make the models print a more human friendly representation. To do so we have to define a method that specializes on the dao-class.
+
+#+begin_src lisp
+(defmethod print-object ((obj word) stream)
+  "In order to help checking the results"
+  (print-unreadable-object (obj stream :type t :identity t)
+    (format stream "name: ~A" (word-name obj))))
+
+(with-connection *db*
+  (pomo:get-dao 'word "bobo"))
+>> #<WORD name: bobo {1006D45EB3}>
+#+end_src
+
+    In this case we use print-unreadable object to display the tag, describing its type, and the location of the object. If we don't care for that information we could simply write:
+
+#+begin_src lisp
+(defmethod print-object ((obj word) stream)
+  "In order to help checking the results"
+  (format stream "name: ~A" (word-name obj)))
+
+(with-connection *db*
+  (pomo:get-dao 'word "bobo"))
+>> name: bobo
+#+end_src
+
 *** Inserting Data
     One can insert rows of data using the insert-dao function, which takes an instance of a class with dao-class as a metaclass.
 #+begin_src lisp
@@ -136,8 +162,8 @@ And now to the examples:
 #+end_src
 
 *** Deleting Data
-
     For delete we have a similar procedure, but we have to pass an dao instance. We can use get-dao, select-dao or even make-instance. However using make-instance, everyslot muy be bound, including the primary key so it is not of much use:
+
 #+begin_src lisp
 ;; Delete the first definition of the word "bobo"
 (with-connection *db*
@@ -152,7 +178,27 @@ And now to the examples:
 (with-connection *db*
   (pomo:delete-dao (make-instance 'word :name "bobo")))
 #+end_src
+
 *** Updating Data
+    With s-sql updating is akin to SQL.
+
+#+begin_src lisp
+(with-connection *db*
+  (pomo:query (:update 'definition :set 'content "Le peor" :where (:= 'word "bobo"))))
+
+;; Or we we ant to target an especific one
+(with-connection *db*
+  (pomo:query (:update 'definition :set 'content "Le peor" :where (:= 'word "bobo"))))
+#+end_src
+
+    Using DAOs, we first have to fetch them.
+#+begin_src lisp
+(with-connection *db*
+  (let ((target-def (pomo:get-dao 'definition 11)))
+    (progn (setf (definition-content target-def) "El Padre de Boba Fett")
+           (pomo:update-dao target-def))))
+#+end_src
+
 * Ningle
 
 * References
