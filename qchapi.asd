@@ -7,7 +7,8 @@
   :version "20130401"
   :serial t
   :license "<3"
-  :depends-on (#:clack
+  :depends-on (#:anaphora
+               #:clack
                #:ningle
                #:yason
                #:postmodern)

@@ -199,6 +199,12 @@ And now to the examples:
            (pomo:update-dao target-def))))
 #+end_src
 
+*** Custom made queries
+
+#+begin_src lisp
+(with-connection *db*
+  (get-or-create-definition "n00b" "Principiante necio."))
+#+end_src
 * Ningle
 
 * References

@@ -1,5 +1,5 @@
 (defpackage :qchapi.models
-  (:use :cl :pomo)
+  (:use :cl :anaphora :pomo)
   (:export :*db*
            :word
            :definition
